@@ -1,0 +1,32 @@
+{
+  "name": "03-api-solid",
+  "version": "1.0.0",
+  "description": "GymPass style app",
+  "main": "index.js",
+  "scripts": {
+    "start:dev": "tsx watch src/server.ts",
+    "start": "node build/server.js",
+    "build": "tsup src --out-dir build"
+
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gustavuhh1/03-api-solid.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gustavuhh1/03-api-solid/issues"
+  },
+  "homepage": "https://github.com/gustavuhh1/03-api-solid#readme",
+  "devDependencies": {
+    "@types/node": "^22.10.9",
+    "tsup": "^8.3.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "fastify": "^5.2.1"
+  }
+}
