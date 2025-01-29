@@ -15,7 +15,8 @@ export async function register(request: FastifyRequest, reply: FastifyReply){
 
   try {
     await registerUseCase({name, email, password});
-  } catch (err) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (err: any) {
     return reply.status(409).send({
       message: err.message
     })
