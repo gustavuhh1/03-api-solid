@@ -1,4 +1,4 @@
-## App
+# App
 
 GymPass style app
 
