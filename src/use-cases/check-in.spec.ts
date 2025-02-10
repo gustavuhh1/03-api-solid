@@ -3,6 +3,7 @@ import { InMemoryCheckInsRepository } from "@/repositories/in-memory/in-memory-c
 import { CheckInUseCase } from "./check-in";
 import { InMemoryGymsRepository } from "@/repositories/in-memory/in-memory-gyms-repository";
 import { Decimal } from "@prisma/client/runtime/library";
+import { Console } from "console";
 
 let checkInsRepository: InMemoryCheckInsRepository;
 let gymsRepository: InMemoryGymsRepository;
@@ -18,12 +19,12 @@ describe("Register Use Case", () => {
       id: "gym-01",
       title: "Academia Frangolandia",
       description: " ",
-      latitude: new Decimal(0),
-      longitude: new Decimal(0),
+      latitude: new Decimal(-3.7905855545846596),
+      longitude: new Decimal(-38.50106334738821),
       phone: null,
     });
-
-    vi.useFakeTimers()
+    //-3.7905855545846596, -38.50106334738821
+    vi.useFakeTimers();
   });
 
   afterEach(() => {
@@ -35,8 +36,8 @@ describe("Register Use Case", () => {
     const { checkIn } = await sut.execute({
       gymId: 'gym-01',
       userId: 'user-01',
-      userLatitude: 0,
-      userLongitude: 0,
+      userLatitude: -3.7905855545846596,
+      userLongitude: -38.50106334738821,
     });
 
     expect(checkIn.id).toEqual(expect.any(String));
@@ -48,16 +49,16 @@ describe("Register Use Case", () => {
     await sut.execute({
       gymId: "gym-01",
       userId: "user-01",
-      userLatitude: 0,
-      userLongitude: 0,
+      userLatitude: -3.7905855545846596,
+      userLongitude: -38.50106334738821,
     });
 
     await expect(() =>
       sut.execute({
         gymId: "gym-01",
         userId: "user-01",
-        userLatitude: 0,
-        userLongitude: 0,
+        userLatitude: -3.7905855545846596,
+        userLongitude: -38.50106334738821,
       })
     ).rejects.toBeInstanceOf(Error);
   });
@@ -68,8 +69,8 @@ describe("Register Use Case", () => {
     await sut.execute({
       gymId: "gym-01",
       userId: "user-01",
-      userLatitude: 0,
-      userLongitude: 0,
+      userLatitude: -3.7905855545846596,
+      userLongitude: -38.50106334738821,
     });
 
     vi.setSystemTime(new Date(2022, 0, 21, 8, 0, 0));
@@ -77,10 +78,31 @@ describe("Register Use Case", () => {
     const { checkIn } = await sut.execute({
       gymId: "gym-01",
       userId: "user-01",
-      userLatitude: 0,
-      userLongitude: 0,
+      userLatitude: -3.7905855545846596,
+      userLongitude: -38.50106334738821,
     });
 
     expect(checkIn.id).toEqual(expect.any(String))
+  });
+
+  it("should not be able to check in on distance gym", async () => {
+    gymsRepository.items.push({
+      id: "gym-02",
+      title: "Academia Frangolandia",
+      description: " ",
+      latitude: new Decimal(-3.791213928724899),
+      longitude: new Decimal(-38.4802377327178),
+      phone: null,
+    });
+
+    // -3.791213928724899, -38.4802377327178
+    //-3.790606874878049, -38.501074594216846
+
+    await expect(() => sut.execute({
+      gymId: "gym-02",
+      userId: "user-01",
+      userLatitude: -3.790606874878049,
+      userLongitude: -38.501074594216846,
+    })).rejects.toBeInstanceOf(Error)
   });
 });
