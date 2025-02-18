@@ -5,26 +5,27 @@ import dayjs from "dayjs";
 
 
 export class InMemoryCheckInsRepository implements CheckInsRepository {
-  public items: CheckIn[] = []
-  
-  async findByUserIdOnDate(userId: string, date: Date){
-    const startOftheDay = dayjs(date).startOf('date')
-    const endOftheDay = dayjs(date).endOf('date')
+  public items: CheckIn[] = [];
 
-    const checkOnSameDate = this.items.find(checkIn => {
+  async findByUserIdOnDate(userId: string, date: Date) {
+    const startOftheDay = dayjs(date).startOf("date");
+    const endOftheDay = dayjs(date).endOf("date");
+
+    const checkOnSameDate = this.items.find((checkIn) => {
       const checkInDate = dayjs(checkIn.created_at);
-      const isOnSameDate = checkInDate.isAfter(startOftheDay) && checkInDate.isBefore(endOftheDay)
+      const isOnSameDate =
+        checkInDate.isAfter(startOftheDay) && checkInDate.isBefore(endOftheDay);
 
       return checkIn.user_id === userId && isOnSameDate;
-    })
+    });
 
-    if(!checkOnSameDate){
-      return null
+    if (!checkOnSameDate) {
+      return null;
     }
 
-    return checkOnSameDate
+    return checkOnSameDate;
   }
-  
+
   async create(data: Prisma.CheckInUncheckedCreateInput) {
     const checkIn = {
       id: randomUUID(),
@@ -37,6 +38,12 @@ export class InMemoryCheckInsRepository implements CheckInsRepository {
     this.items.push(checkIn);
 
     return checkIn;
+  }
+
+  async findManyByUserId(userId: string, page: number) {
+    return this.items
+      .filter((item) => item.user_id === userId)
+      .slice((page - 1) * 20, page * 20)
   }
 }
 
